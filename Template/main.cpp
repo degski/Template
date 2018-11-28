@@ -41,8 +41,12 @@
 
 namespace fs = std::filesystem;
 
+#include <SFML/System.hpp> // Test linking of a (random) library.
+
 
 int wmain ( ) {
+
+    sf::Clock c;
 
     std::wcout << L"Hello world..." << std::endl;
 
