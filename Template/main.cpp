@@ -1,7 +1,7 @@
 
 // MIT License
 //
-// Copyright (c) 2018, 2019 degski
+// Copyright (c) 2019 degski
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@
 #include <array>
 #include <filesystem>
 #include <fstream>
-#include <iostream>
+#include <sax/iostream.hpp>
 #include <iterator>
 #include <list>
 #include <map>
@@ -38,17 +38,11 @@
 #include <type_traits>
 #include <vector>
 
-
 namespace fs = std::filesystem;
 
-#include <SFML/System.hpp> // Test linking of a (random) library.
+int main ( ) {
 
-
-int wmain ( ) {
-
-    sf::Clock c;
-
-    std::wcout << L"Hello world..." << std::endl;
+    std::cout << "Hello world..." << std::endl;
 
     return EXIT_SUCCESS;
 }
