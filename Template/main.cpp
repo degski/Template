@@ -42,7 +42,7 @@ namespace fs = std::filesystem;
 
 int main ( ) {
 
-    std::cout << "Hello world..." << std::endl;
+    std::wcout << L"Hello world..." << nl;
 
     return EXIT_SUCCESS;
 }
