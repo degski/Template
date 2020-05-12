@@ -1,7 +1,7 @@
 
 // MIT License
 //
-// Copyright (c) 2019 degski
+// Copyright (c) 2020 degski
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,22 +27,77 @@
 #include <cstdlib>
 
 #include <array>
-#include <filesystem>
-#include <fstream>
+#include <atomic>
+#include <algorithm>
+#include <initializer_list>
 #include <sax/iostream.hpp>
-#include <iterator>
-#include <list>
-#include <map>
+#include <limits>
+#include <memory>
+#include <mutex>
+#include <new>
 #include <random>
+#include <span>
+#include <stdexcept>
 #include <string>
+#include <thread>
+#include <jthread>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
-namespace fs = std::filesystem;
+/*
+    -fsanitize = address
+
+    C:\Program Files\LLVM\lib\clang\10.0.0\lib\windows\clang_rt.asan_cxx-x86_64.lib
+    C:\Program Files\LLVM\lib\clang\10.0.0\lib\windows\clang_rt.asan-preinit-x86_64.lib
+    C:\Program Files\LLVM\lib\clang\10.0.0\lib\windows\clang_rt.asan-x86_64.lib
+
+    C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\tbb\lib\intel64_win\vc_mt\tbb.lib
+*/
+
+#include <sax/prng_sfc.hpp>
+#include <sax/uniform_int_distribution.hpp>
+
+#if defined( NDEBUG )
+#    define RANDOM 1
+#else
+#    define RANDOM 0
+#endif
+
+namespace ThreadID {
+    // Creates a new ID.
+    [[nodiscard]] inline int get (bool) noexcept {
+        static std::atomic<int> global_id = 0;
+        return global_id++;
+    }
+    // Returns ID of this thread.
+    [[nodiscard]] inline int get () noexcept {
+        static thread_local int thread_local_id = get (false);
+        return thread_local_id;
+    }
+} // namespace ThreadID
+
+namespace Rng {
+    // Chris Doty-Humphrey's Small Fast Chaotic Prng.
+    [[nodiscard]] inline sax::Rng& generator () noexcept {
+        if constexpr (RANDOM) {
+            static thread_local sax::Rng generator (sax::os_seed (), sax::os_seed (), sax::os_seed (), sax::os_seed ());
+            return generator;
+        }
+        else {
+            static thread_local sax::Rng generator (sax::fixed_seed () + ThreadID::get ());
+            return generator;
+        }
+    }
+} // namespace Rng
+
+#undef RANDOM
+
+sax::Rng& rng = Rng::generator ();
 
 int main ( ) {
 
-    std::wcout << L"Hello world..." << nl;
+    std::cout << "Hello corona-world!" << nl;
 
     return EXIT_SUCCESS;
 }
